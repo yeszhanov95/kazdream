@@ -1,27 +1,27 @@
 package main
 
 import (
-"bufio"
-"fmt"
-"io"
-"io/ioutil"
-"net/http"
-"os"
-"os/signal"
-"runtime"
-"strings"
-"sync"
-"syscall"
-"time"
+	"bufio"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"os/signal"
+	"runtime"
+	"strings"
+	"sync"
+	"syscall"
+	"time"
 )
 
 type job struct {
-	gid int // id of executing goroutine
-	url string
-	code int
-	size int64
+	gid   int // id of executing goroutine
+	url   string
+	code  int
+	size  int64
 	rtime time.Duration
-	err error
+	err   error
 }
 
 func main() {
@@ -44,7 +44,7 @@ func main() {
 	}
 
 	urlsChan := readUrls(bufio.NewReader(os.Stdin))
-	doneJobsChan :=processJobs(urlsChan)
+	doneJobsChan := processJobs(urlsChan)
 
 	go func() {
 		for job := range doneJobsChan {
@@ -94,7 +94,7 @@ func processJobs(urlsChan <-chan string) <-chan job {
 	return doneJobsChan
 }
 
-func fetchUrl(url string, gid int,  doneJobs chan<- job, wg *sync.WaitGroup) {
+func fetchUrl(url string, gid int, doneJobs chan<- job, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	doneJob := job{gid: gid, url: url}
@@ -124,7 +124,7 @@ func readUrls(reader *bufio.Reader) <-chan string {
 
 	go func() {
 		for {
-			url,  err := reader.ReadString('\n')
+			url, err := reader.ReadString('\n')
 			if err == io.EOF {
 				break
 			}
@@ -140,4 +140,3 @@ func readUrls(reader *bufio.Reader) <-chan string {
 
 	return urlsChan
 }
-
